@@ -1,0 +1,30 @@
+h1 {
+  color: #27aedb;
+  text-align: center;
+}
+
+button {
+  color: #27aedb;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.bg-pink {
+  background-color: pink;
+}
+
+#main {
+  display: flex;
+  flex-direction: column;
+  /* align-content: center; */
+  /* width: 70%; */
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 50%;
+  justify-content: center;
+  align-items: center;
+}
+/* #task {
+  justify-self: center;
+} */
