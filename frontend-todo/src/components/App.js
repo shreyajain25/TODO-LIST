@@ -3,28 +3,34 @@ import "./../styles/App.css";
 import List from '../components/List';
 
 function App() {
+	let [response, setResponse] = useState([]);
 	let [tasks, setTask] = useState([]);
 	let [newTask, setNewTask] = useState("");
 	let [desc, setDesc] = useState([]);
 	let [newDesc, setNewDesc] = useState("");
 	let [date, setDate] = useState([]);
 	let [newDate, setNewDate] = useState("");
-	let [createdAt, setcreatedAt] = useState("");
+	// let [createdAt, setcreatedAt] = useState("");
 
 	useEffect(() => 
 		{
-			fetch("http://localhost:9000/showTask", {
+			async function fetchData() {
+				await fetch("http://localhost:9000/showTask", {
 				method: "GET",
-				headers: {"ContentType": "application/json",}
-			})
-			.then((res) => res.json())
-			.then((res) => { 
-				res.map((val) => {
+				headers: {"Content-Type": "application/json",},
+				})
+				.then((res) => res.json())
+				.then((res) => { 
+					setResponse(res);
+				});
+				await response.map((val) => {
 					console.log(val);
 					tasks.push(val);
-					})
-				setTask([...tasks])
-			 });
+					setTask([...tasks])
+				});
+			}
+			
+			fetchData();
 		}, []
 	)
 
@@ -47,11 +53,12 @@ function App() {
 				deadline: newDate})
 		})
 		.then((res) => res.json())
-		.then((res) => { setcreatedAt(res.createdAt) });
+		.then((res) => { console.log(res) });
 
 		setNewTask("");
 		setNewDesc("");
 		setNewDate("");
+
 	}
 
 	const addTaskToList = (e) => {
@@ -69,12 +76,12 @@ function App() {
 	const editHandler = (editedValue, taskId) => {
 		fetch("http://localhost:9000/updateTask", {
 			method: "PUT",
-			headers: {"ContentType": "application/json",},
-			body: JSON.stringify({taskname: newTask,
+			headers: {"Content-Type": "application/json",},
+			body: JSON.stringify({taskname: editedValue.task,
 				description: editedValue.desc,
 				deadline: editedValue.date,
 				done: editedValue.done,
-				createdAt: taskId})
+				createdAt: tasks[taskId].createdAt})
 		})
 		.then((res) => res.json())
 		.then((res) => { console.log(res) });
@@ -85,8 +92,8 @@ function App() {
 	const deleteHandler = (taskId) => {
 		fetch("http://localhost:9000/deleteTask", {
 			method: "DELETE",
-			headers: {"ContentType": "application/json",
-				"createdAt": createdAt}
+			headers: {"Content-Type": "application/json",
+				"createdAt": tasks[taskId].createdAt}
 		})
 		.then((res) => res.json())
 		.then((res) => { console.log(res) });
@@ -102,7 +109,7 @@ function App() {
 			Deadline: <input id="date" type="date"  onChange={addDateToList}></input>
 			<button id="btn" onClick={addTask} disabled={newTask.trim().length === 0}>Add Task</button>
 			{tasks.map((task, idx) => {
-				return <List task={{task: task.taskname, desc: task.description, date: task.deadline}} key={`${tasks.createdAt}`} idx={idx} onDelete={deleteHandler} onEdit={editHandler} />
+				return <List task={{task: task.taskname, desc: task.description, date: task.deadline}} key={`${task.taskname}`} idx={idx} onDelete={deleteHandler} onEdit={editHandler} />
 			})}
 		</div>
 	);

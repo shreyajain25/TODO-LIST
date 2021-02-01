@@ -6,10 +6,23 @@ function List(props)
         const [editTask, setEditTask] = useState(false);
         let [updatedtask, setUpdatedTask] = useState(props.task);
         let [update, setUpdate] = useState("");
+        let [desc, setDesc] = useState("");
+        let [date, setDate] = useState("");
 	let [done, setDone] = useState(false);
 
 	const editTaskInList = (e) => {
-		setUpdate(e.target.value);
+                setUpdate(e.target.value);
+                updateTask.task = update;
+        }
+
+        const editDescToList = (e) => {
+                setDesc(e.target.value);
+                updateTask.desc = desc;
+        }
+
+        const editDateToList = (e) => {
+                setDate(e.target.value);
+                updateTask.date = date;
         }
 
         const updateTask = () => {
@@ -17,7 +30,7 @@ function List(props)
                         setUpdatedTask(update);
                         setEditTask(false);
                         setUpdate("");
-                        props.onEdit(updatedtask, props.key);
+                        props.onEdit(updatedtask, props.idx);
                 }
 	}
         
@@ -37,8 +50,10 @@ function List(props)
 
                         {editTask ? 
                         <React.Fragment>
-                                <textarea className="editTask" onChange={editTaskInList} value={update}>
+                                Task : <textarea className="editTask" onChange={editTaskInList} value={update}>
                                 </textarea>
+			        Description: <textarea id="desc" onChange={editDescToList} value={desc}></textarea>
+			        Deadline: <input id="date" type="date"  onChange={editDateToList}></input>
                                 <button className="saveTask" onClick={updateTask} 
                                 disabled={update.trim().length === 0}>
                                         Save
@@ -48,7 +63,7 @@ function List(props)
                         <React.Fragment>
                                 <input type="checkbox" value={done} onChange={isTaskDone}></input>
                                 <button className="edit" onClick={isTaskToEdit}>Edit</button>
-                                <button className="delete" onClick={() => {props.onDelete(props.key)}}>Delete</button>
+                                <button className="delete" onClick={() => {props.onDelete(props.idx)}}>Delete</button>
                         </React.Fragment>}
                 </div>
 	);

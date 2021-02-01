@@ -7,7 +7,7 @@ var app = express();
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(cors({ credentials: true, origin: "http://localhost:8080" }));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 //environment variable
 env.config();
@@ -75,7 +75,7 @@ app.put("/updateTask", async (req, res) => {
 
 app.delete("/deleteTask", async (req, res) => {     
     await tasksModel.deleteOne(
-        {createdAt: req.body.createdAt}
+        {createdAt: req.headers.createdAt}
     ).then(() => {
         res.status(201).json({ message: "Task Deleted Successfully!!" });
     }).catch((e) => {
